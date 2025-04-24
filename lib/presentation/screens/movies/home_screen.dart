@@ -13,6 +13,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: _HomeView(),
+      bottomNavigationBar: CustomBottomNavigation(),
     );
   }
 }
@@ -40,18 +41,52 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final slideShowMovies = ref.watch(moviesSlideShowProvider);
     
 
-    return Column(
-      children: [
-
-        CustomAppbar(),
-
-        MoviesSlideshow(movies: slideShowMovies),
-
-        MovieHorizontalListview(
-          movies: nowPlayingMovies,
-          title: 'No cinema',
-          subTitle: 'Lunes 20',)
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+      
+          CustomAppbar(),
+      
+          MoviesSlideshow(movies: slideShowMovies),
+      
+          MovieHorizontalListview(
+            movies: nowPlayingMovies,
+            title: 'No cinema',
+            subTitle: 'Lunes 20',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+            },
+          ),
+      
+          MovieHorizontalListview(
+            movies: nowPlayingMovies,
+            title: 'Proximos',
+            subTitle: 'Este mes',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+            },
+          ),
+      
+          MovieHorizontalListview(
+            movies: nowPlayingMovies,
+            title: 'Populares',
+            subTitle: '',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+            },
+          ),
+      
+          MovieHorizontalListview(
+            movies: nowPlayingMovies,
+            title: 'Melhor qualificados',
+            subTitle: '',
+            loadNextPage: () {
+              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+            },
+          )
+      
+        ],
+      ),
     );
   }
 }
