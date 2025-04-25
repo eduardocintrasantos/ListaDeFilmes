@@ -32,61 +32,84 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
 
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final slideShowMovies = ref.watch(moviesSlideShowProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final populargMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+
+    //return FullScreenLoader();
     
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-      
-          CustomAppbar(),
-      
-          MoviesSlideshow(movies: slideShowMovies),
-      
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'No cinema',
-            subTitle: 'Lunes 20',
-            loadNextPage: () {
-              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-            },
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppbar(),
           ),
-      
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'Proximos',
-            subTitle: 'Este mes',
-            loadNextPage: () {
-              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+        ),
+
+
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Column(
+                children: [
+              
+                  MoviesSlideshow(movies: slideShowMovies),
+              
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'No cinema',
+                    subTitle: 'Lunes 20',
+                    loadNextPage: () {
+                      ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+              
+                  MovieHorizontalListview(
+                    movies: upcomingMovies,
+                    title: 'Proximos',
+                    subTitle: 'Este mes',
+                    loadNextPage: () {
+                      ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+              
+                  MovieHorizontalListview(
+                    movies: populargMovies,
+                    title: 'Populares',
+                    subTitle: '',
+                    loadNextPage: () {
+                      ref.read(popularMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+              
+                  MovieHorizontalListview(
+                    movies: topRatedMovies,
+                    title: 'Melhor qualificados',
+                    subTitle: '',
+                    loadNextPage: () {
+                      ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+                    },
+                  )
+              
+                ],
+              );
             },
-          ),
-      
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'Populares',
-            subTitle: '',
-            loadNextPage: () {
-              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-            },
-          ),
-      
-          MovieHorizontalListview(
-            movies: nowPlayingMovies,
-            title: 'Melhor qualificados',
-            subTitle: '',
-            loadNextPage: () {
-              ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-            },
+            childCount: 1
           )
-      
-        ],
-      ),
+        )
+      ] 
     );
   }
 }
